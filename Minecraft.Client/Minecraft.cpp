@@ -4767,7 +4767,7 @@ bool Minecraft::handleClientSideCommand(const wstring& chatMessage)
 		}
 
 		// Only the host can change gamemode
-		if (level && level->isClientSide)
+		if (!g_NetworkManager.IsHost())
 		{
 			if (gui) gui->addMessage(L"\xa7c[Error] Only the host can use /gamemode", iPad);
 			return true;
@@ -4813,7 +4813,7 @@ bool Minecraft::handleClientSideCommand(const wstring& chatMessage)
 			return true;
 		}
 
-		if (level && level->isClientSide)
+		if (!g_NetworkManager.IsHost())
 		{
 			if (gui) gui->addMessage(L"\xa7c[Error] Only the host can use /op", iPad);
 			return true;
