@@ -219,7 +219,20 @@ bool IQNetPlayer::IsGuest() { return false; }
 bool IQNetPlayer::IsLocal() { return !m_isRemote; }
 PlayerUID IQNetPlayer::GetXuid() { return INVALID_XUID; }
 extern wstring g_playerName;
-LPCWSTR IQNetPlayer::GetGamertag() { return g_playerName.empty() ? L"Windows" : g_playerName.c_str(); }
+extern char g_Win64Username[17];
+static wstring s_wGamertag;
+
+LPCWSTR IQNetPlayer::GetGamertag() { 
+	if (!g_playerName.empty()) return g_playerName.c_str();
+	if (g_Win64Username[0] != '\0') {
+		if (s_wGamertag.empty()) {
+			std::string str(g_Win64Username);
+			s_wGamertag = std::wstring(str.begin(), str.end());
+		}
+		return s_wGamertag.c_str();
+	}
+	return L"Windows"; 
+}
 int IQNetPlayer::GetSessionIndex() { return 0; }
 bool IQNetPlayer::IsTalking() { return false; }
 bool IQNetPlayer::IsMutedByLocalUser(DWORD dwUserIndex) { return false; }
