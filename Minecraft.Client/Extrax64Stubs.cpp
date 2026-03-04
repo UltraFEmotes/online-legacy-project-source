@@ -219,21 +219,21 @@ bool IQNetPlayer::IsGuest() { return false; }
 bool IQNetPlayer::IsLocal() { return !m_isRemote; }
 PlayerUID IQNetPlayer::GetXuid() { return INVALID_XUID; }
 extern wstring g_playerName;
-extern char g_Win64Username[17];
-static wstring s_wGamertag;
-
-LPCWSTR IQNetPlayer::GetGamertag() { 
-	if (!g_playerName.empty()) return g_playerName.c_str();
-	if (g_Win64Username[0] != '\0') {
-		if (s_wGamertag.empty()) {
-			std::string str(g_Win64Username);
-			s_wGamertag = std::wstring(str.begin(), str.end());
+LPCWSTR IQNetPlayer::GetGamertag() { return m_gamertag; }
+static bool Win64_IsActivePlayer(IQNetPlayer * p, DWORD index);
+int IQNetPlayer::GetSessionIndex() 
+{ 
+	DWORD found = 0;
+	for (DWORD i = 0; i < IQNet::s_playerCount; i++)
+	{
+		if (Win64_IsActivePlayer(&IQNet::m_player[i], i))
+		{
+			if (&IQNet::m_player[i] == this) return found;
+			found++;
 		}
-		return s_wGamertag.c_str();
 	}
-	return L"Windows"; 
+	return 0; 
 }
-int IQNetPlayer::GetSessionIndex() { return 0; }
 bool IQNetPlayer::IsTalking() { return false; }
 bool IQNetPlayer::IsMutedByLocalUser(DWORD dwUserIndex) { return false; }
 bool IQNetPlayer::HasVoice() { return false; }
